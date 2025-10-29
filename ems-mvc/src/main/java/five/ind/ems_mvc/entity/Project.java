@@ -19,13 +19,20 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long projectId;
 
+    @Column(unique = true, nullable = false)
     private String name;
 
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
 
-    private String desc;
+    @ManyToOne
+    @JoinColumn(name = "dept_id") // department reference
+    private Department department;
+
+    @Column(name = "description", length = 100)
+    private String description;
+
     private String priority;
     private LocalDate startDate;
     private LocalDate endDate;
