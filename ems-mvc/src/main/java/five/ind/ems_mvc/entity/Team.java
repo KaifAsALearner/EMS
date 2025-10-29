@@ -17,6 +17,7 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
 
+    @Column(unique = true, nullable = false)
     private String name;
 
     @ManyToOne
