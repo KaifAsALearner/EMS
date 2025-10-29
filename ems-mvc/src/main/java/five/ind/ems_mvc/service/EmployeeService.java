@@ -11,4 +11,9 @@ public interface EmployeeService {
     List<EmployeeDto> findAllEmployees();
     List<String> findEmails(long employeeId);
     List<String> findPhones(long employeeId);
+    Employee updateEmployee(Employee employee, boolean updatePassword);  // NEW
+    void addEmail(long employeeId, String email);  // NEW
+    void removeEmail(long employeeId, String email);  // NEW
+    void addPhone(long employeeId, String phoneNo);  // NEW
+    void removePhone(long employeeId, String phoneNo);  // NEW
 }

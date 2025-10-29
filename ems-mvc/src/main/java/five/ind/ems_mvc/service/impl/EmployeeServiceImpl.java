@@ -2,6 +2,8 @@ package five.ind.ems_mvc.service.impl;
 
 import five.ind.ems_mvc.dto.EmployeeDto;
 import five.ind.ems_mvc.entity.*;
+import five.ind.ems_mvc.entity.compositeId.EmailId;
+import five.ind.ems_mvc.entity.compositeId.PhoneId;
 import five.ind.ems_mvc.entity.compositeId.RoleId;
 import five.ind.ems_mvc.repository.*;
 import five.ind.ems_mvc.service.EmployeeService;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -121,5 +124,59 @@ public class EmployeeServiceImpl implements EmployeeService {
                     newRole.setDepartment(generalDept);
                     return roleRepository.save(newRole);
                 });
+    }
+
+    @Override
+    public Employee updateEmployee(Employee updated, boolean updatePassword) {
+        Employee current = employeeRepository.findById(updated.getEmpId()).orElseThrow();
+
+        // Check username uniqueness if allowing username updates
+        Optional<Employee> exists = employeeRepository.findByUsername(updated.getUsername());
+        if (exists.isPresent() && !exists.get().getEmpId().equals(updated.getEmpId())) {
+            throw new RuntimeException("Username is already taken!");
+        }
+
+        current.setFName(updated.getFName());
+        current.setLName(updated.getLName());
+        current.setGender(updated.getGender());
+        // ... other editable fields ...
+
+        // Password hashing logic
+        if (updatePassword && updated.getPassword() != null && !updated.getPassword().isBlank()) {
+            if (!updated.getPassword().startsWith("$2a$")) {
+                current.setPassword(passwordEncoder.encode(updated.getPassword()));
+            } else {
+                current.setPassword(updated.getPassword());
+            }
+        }
+        return employeeRepository.save(current);
+    }
+    @Override
+    public void addEmail(long employeeId, String email) {
+        EmailId eid = new EmailId(employeeId, email);
+        Employee emp = employeeRepository.findById(employeeId).orElseThrow();
+        Email e = new Email();
+        e.setId(eid);
+        e.setEmployee(emp);
+        emailRepository.save(e);
+    }
+    @Override
+    public void removeEmail(long employeeId, String email) {
+        EmailId eid = new EmailId(employeeId, email);
+        emailRepository.deleteById(eid);
+    }
+    @Override
+    public void addPhone(long employeeId, String phoneNo) {
+        PhoneId pid = new PhoneId(employeeId, phoneNo);
+        Employee emp = employeeRepository.findById(employeeId).orElseThrow();
+        Phone p = new Phone();
+        p.setId(pid);
+        p.setEmployee(emp);
+        phoneRepository.save(p);
+    }
+    @Override
+    public void removePhone(long employeeId, String phoneNo) {
+        PhoneId pid = new PhoneId(employeeId, phoneNo);
+        phoneRepository.deleteById(pid);
     }
 }
