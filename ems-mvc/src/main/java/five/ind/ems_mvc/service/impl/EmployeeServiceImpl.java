@@ -65,12 +65,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public List<EmployeeDto> findAllEmployees() {
+    public List<Employee> findAllEmployees() {
         List<Employee> employees = employeeRepository.findAll();
         // Use a stream to map each Employee entity to an EmployeeDto
-        return employees.stream()
-                .map(this::convertEntityToDto)
-                .collect(Collectors.toList());
+        return employees;
     }
 
     @Override
@@ -178,5 +176,31 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void removePhone(long employeeId, String phoneNo) {
         PhoneId pid = new PhoneId(employeeId, phoneNo);
         phoneRepository.deleteById(pid);
+    }
+
+    @Override
+    public List<Employee> getEmployeesByDepartment(Long deptId) {
+        return employeeRepository.findByRole_Department_DeptId(deptId);
+    }
+
+    @Override
+    public void changeEmployeeRole(Long managerId, Long employeeId, String newRoleName) {
+        Employee manager = employeeRepository.findById(managerId)
+                .orElseThrow(() -> new RuntimeException("Manager not found"));
+        Employee emp = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+
+        if (!manager.getRole().getId().getRoleName().equalsIgnoreCase("MANAGER")) {
+            throw new RuntimeException("Not a manager!");
+        }
+        Long deptId = manager.getRole().getDepartment().getDeptId();
+        if (!emp.getRole().getDepartment().getDeptId().equals(deptId)) {
+            throw new RuntimeException("Employee not in your department!");
+        }
+        Role newRole = roleRepository.findByDepartment_DeptId(deptId)
+                .stream().filter(r -> r.getId().getRoleName().equals(newRoleName))
+                .findFirst().orElseThrow(() -> new RuntimeException("Role not found!"));
+        emp.setRole(newRole);
+        employeeRepository.save(emp);
     }
 }

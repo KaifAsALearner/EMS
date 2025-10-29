@@ -8,7 +8,7 @@ import java.util.List;
 public interface EmployeeService {
     void saveEmployee(EmployeeDto employeeDto);
     Employee findByUsername(String username);
-    List<EmployeeDto> findAllEmployees();
+    List<Employee> findAllEmployees();
     List<String> findEmails(long employeeId);
     List<String> findPhones(long employeeId);
     Employee updateEmployee(Employee employee, boolean updatePassword);  // NEW
@@ -16,4 +16,7 @@ public interface EmployeeService {
     void removeEmail(long employeeId, String email);  // NEW
     void addPhone(long employeeId, String phoneNo);  // NEW
     void removePhone(long employeeId, String phoneNo);  // NEW
+
+    List<Employee> getEmployeesByDepartment(Long deptId);
+    void changeEmployeeRole(Long managerId, Long employeeId, String newRoleName);
 }
