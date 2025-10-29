@@ -29,9 +29,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())   // ✅ updated for Spring Security 6
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/register/**").permitAll()
+                        .requestMatchers("/").permitAll()
                         .requestMatchers("/index").permitAll()
                         .requestMatchers("/employees").hasRole("MANAGER")
                         .anyRequest().authenticated()
@@ -39,7 +40,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/employees")
+                        .defaultSuccessUrl("/profile")
                         .permitAll()
                 )
                 .logout(logout -> logout

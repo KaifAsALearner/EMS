@@ -35,7 +35,7 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // We will create an admin user only if one doesn't already exist
-        if (employeeRepository.findEmployeeByUsername("manager").isEmpty()) {
+        if (employeeRepository.findByUsername("manager").isEmpty()) {
             System.out.println("🌱 Seeding initial data...");
 
             // 1. A Role needs a Department, so let's create one first.

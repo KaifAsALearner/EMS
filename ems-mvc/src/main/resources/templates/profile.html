@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Profile</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/> <!-- optional CSS -->
+</head>
+<body>
+<header>
+    <h1>Welcome, <span th:text="${employee.username}">Username</span>!</h1>
+    <p>Your role: <span th:text="${employee.role.id.roleName}">Role</span></p>
+    <a th:href="@{/logout}">Logout</a>
+</header>
+
+<main>
+    <section>
+        <h2>Employee Details</h2>
+        <table>
+            <tr>
+                <th>Full Name:</th>
+                <td th:text="${employee.FName+' '+employee.LName}">Full Name</td>
+            </tr>
+            <tr>
+                <th>Email(s):</th>
+                <td>
+                    <ul>
+                        <li th:each="email : ${emails}" th:text="${email}">email@example.com</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <th>Department:</th>
+                <td th:text="${employee.role.id.deptId}">Department</td>
+            </tr>
+<!--            <tr>-->
+<!--                <th>Joined On:</th>-->
+<!--                <td th:text="${#dates.format(employee.hiredDate, 'dd/MM/yyyy')}">01/01/2025</td>-->
+<!--            </tr>-->
+        </table>
+    </section>
+
+    <section>
+        <h2>Actions</h2>
+        <a th:href="@{/employees}">View All Employees</a> |
+        <a th:href="@{/profile/edit}">Edit Profile</a>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2025 My Company</p>
+</footer>
+</body>
+</html>

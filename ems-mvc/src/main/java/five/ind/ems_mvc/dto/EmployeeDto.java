@@ -11,6 +11,7 @@ import lombok.Setter;
 
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,4 +34,7 @@ public class EmployeeDto {
 
     @NotNull(message = "Date of birth should not be empty")
     private LocalDate dob;
+
+    private List<String> emails;
+    private List<String> phones;
 }

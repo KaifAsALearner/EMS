@@ -9,4 +9,6 @@ public interface EmployeeService {
     void saveEmployee(EmployeeDto employeeDto);
     Employee findByUsername(String username);
     List<EmployeeDto> findAllEmployees();
+    List<String> findEmails(long employeeId);
+    List<String> findPhones(long employeeId);
 }

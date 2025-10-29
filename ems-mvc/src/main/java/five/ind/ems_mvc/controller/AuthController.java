@@ -10,8 +10,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+//import java.util.List;
 
 @Controller
 public class AuthController {
@@ -22,12 +23,6 @@ public class AuthController {
         this.employeeService = employeeService;
     }
 
-    // Home page
-    @GetMapping("/index")
-    public String home() {
-        return "index";
-    }
-
     // Login page
     @GetMapping("/login")
     public String loginForm() {
@@ -36,9 +31,15 @@ public class AuthController {
 
     // Show registration form
     @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
+    public String showRegistrationForm(Model model,
+                                       @RequestParam(value = "success", required = false) String success) {
         EmployeeDto employee = new EmployeeDto();
         model.addAttribute("employee", employee);
+
+        if (success != null) {
+            model.addAttribute("message", "Employee saved successfully!");
+        }
+
         return "register";
     }
 
@@ -49,7 +50,7 @@ public class AuthController {
                                    Model model) {
         Employee existing = employeeService.findByUsername(employeeDto.getUsername());
         if (existing != null) {
-            result.rejectValue("Username", null,
+            result.rejectValue("username", null,
                     "An account already exists with this username.");
         }
 
@@ -60,13 +61,5 @@ public class AuthController {
 
         employeeService.saveEmployee(employeeDto);
         return "redirect:/register?success";
-    }
-
-    // List all registered employees (ADMIN access only)
-    @GetMapping("/employees")
-    public String listRegisteredEmployees(Model model) {
-        List<EmployeeDto> employees = employeeService.findAllEmployees();
-        model.addAttribute("employees", employees);
-        return "dashboard";
     }
 }

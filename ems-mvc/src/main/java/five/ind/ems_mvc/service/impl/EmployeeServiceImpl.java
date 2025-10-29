@@ -1,19 +1,14 @@
 package five.ind.ems_mvc.service.impl;
 
 import five.ind.ems_mvc.dto.EmployeeDto;
-import five.ind.ems_mvc.entity.Department;
-import five.ind.ems_mvc.entity.Employee;
-import five.ind.ems_mvc.entity.Role;
+import five.ind.ems_mvc.entity.*;
 import five.ind.ems_mvc.entity.compositeId.RoleId;
-import five.ind.ems_mvc.repository.DepartmentRepository;
-import five.ind.ems_mvc.repository.EmployeeRepository;
-import five.ind.ems_mvc.repository.RoleRepository;
+import five.ind.ems_mvc.repository.*;
 import five.ind.ems_mvc.service.EmployeeService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,15 +19,21 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final RoleRepository roleRepository;
     private final DepartmentRepository departmentRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailRepository emailRepository;
+    private final PhoneRepository phoneRepository;
 
     public EmployeeServiceImpl(EmployeeRepository employeeRepository,
                                RoleRepository roleRepository,
                                DepartmentRepository departmentRepository,
-                               PasswordEncoder passwordEncoder) {
+                               PasswordEncoder passwordEncoder,
+                               EmailRepository emailRepository,
+                               PhoneRepository phoneRepository) {
         this.employeeRepository = employeeRepository;
         this.roleRepository = roleRepository;
         this.departmentRepository = departmentRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailRepository = emailRepository;
+        this.phoneRepository = phoneRepository;
     }
 
     @Override
@@ -57,7 +58,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee findByUsername(String username) {
-        return employeeRepository.findEmployeeByUsername(username).orElse(null);
+        return employeeRepository.findByUsername(username).orElse(null);
     }
 
     @Override
@@ -69,6 +70,24 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<String> findEmails(long employeeId) {
+        List<Email> emails = emailRepository.findByEmployeeEmpId(employeeId);
+
+        return emails.stream()
+                .map(e -> e.getId().getEmail())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> findPhones(long employeeId) {
+        List<Phone> phones = phoneRepository.findByEmployeeEmpId(employeeId);
+
+        return phones.stream()
+                .map(e -> e.getId().getPhoneNo())
+                .collect(Collectors.toList());
+    }
+
     // Private helper method to convert an Employee entity to a DTO
     private EmployeeDto convertEntityToDto(Employee employee) {
         EmployeeDto employeeDto = new EmployeeDto();
@@ -77,6 +96,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeDto.setUsername(employee.getUsername());
         employeeDto.setGender(employee.getGender());
         employeeDto.setDob(employee.getDob());
+        employeeDto.setEmails(findEmails(employee.getEmpId()));
+        employeeDto.setPhones(findPhones(employee.getEmpId()));
         return employeeDto;
     }
 

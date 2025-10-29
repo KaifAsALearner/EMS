@@ -1,7 +1,6 @@
 package five.ind.ems_mvc.security;
 
 import five.ind.ems_mvc.entity.Employee;
-import five.ind.ems_mvc.entity.Role;
 import five.ind.ems_mvc.repository.EmployeeRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -27,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //find emp by username
-        Employee employee = employeeRepository.findEmployeeByUsername(username)
+        Employee employee = employeeRepository.findByUsername(username)
                 .orElseThrow(()->new UsernameNotFoundException("Employee not found with username: " + username));
 
         String roleName = "ROLE_" + employee.getRole().getId().getRoleName().toUpperCase();
