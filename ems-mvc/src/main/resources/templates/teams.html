@@ -2,59 +2,229 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Team Management</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <title>Team Management | EMF</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.85)),
+                        url('https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: #e0f7fa;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            margin-top: 70px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            padding: 40px;
+            animation: fadeIn 0.7s ease-in-out;
+        }
+
+        h2 {
+            color: #00bcd4;
+            font-weight: 700;
+            text-shadow: 0 3px 10px rgba(0,188,212,0.4);
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            color: #e0f7fa;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,188,212,0.2);
+        }
+
+        .card-header {
+            background: rgba(0,188,212,0.1);
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .form-control, .form-select {
+            background-color: rgba(18,18,18,0.9);
+            border: 1px solid rgba(0,188,212,0.3);
+            color: #e0f7fa;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #00e5ff;
+            box-shadow: 0 0 12px rgba(0,229,255,0.4);
+            background-color: rgba(22,22,22,0.95);
+            color: #fff;
+        }
+
+        .btn {
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #00bcd4;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #00e5ff;
+            box-shadow: 0 0 15px rgba(0,229,255,0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background-color: #26a69a;
+            border: none;
+        }
+
+        .btn-success:hover {
+            background-color: #1de9b6;
+            box-shadow: 0 0 15px rgba(29,233,182,0.4);
+        }
+
+        .btn-outline-primary {
+            color: #00bcd4;
+            border-color: #00bcd4;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #00bcd4;
+            color: #000;
+            box-shadow: 0 0 12px rgba(0,188,212,0.4);
+        }
+
+        .btn-outline-danger {
+            color: #ff5252;
+            border-color: #ff5252;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #ff5252;
+            color: #fff;
+            box-shadow: 0 0 12px rgba(255,82,82,0.4);
+        }
+
+        .btn-danger {
+            background-color: #ff5252;
+            border: none;
+        }
+
+        .btn-danger:hover {
+            background-color: #ff1744;
+            box-shadow: 0 0 15px rgba(255,23,68,0.4);
+        }
+
+        .badge {
+            font-size: 0.9rem;
+            border-radius: 8px;
+        }
+
+        .badge.bg-info {
+            background-color: rgba(0,188,212,0.2) !important;
+            color: #00e5ff;
+        }
+
+        .alert {
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .border-bottom {
+            border-color: rgba(255,255,255,0.1) !important;
+        }
+
+        .text-muted {
+            color: #b2ebf2 !important;
+            opacity: 0.8;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(20px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        a.back-link {
+            color: #00bcd4;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        a.back-link:hover {
+            color: #00e5ff;
+            text-shadow: 0 0 8px rgba(0,229,255,0.6);
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-5">
-    <h2>Team Management Dashboard</h2>
 
-    <!-- Success or error messages -->
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2><i class="bi bi-people-fill"></i> Team Management Dashboard</h2>
+        <a class="back-link" th:href="@{/}">
+            <i class="bi bi-house-door"></i> Back to Home
+        </a>
+    </div>
+
+    <!-- Success / Error messages -->
     <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-    <!-- Create Team Form (Only for Managers) -->
+    <!-- Create Team Form -->
     <div th:if="${isManager}" class="card mb-4">
         <div class="card-header">
-            <h5>Create New Team</h5>
+            <h5><i class="bi bi-plus-circle"></i> Create New Team</h5>
         </div>
         <div class="card-body">
             <form th:action="@{/teams/create}" method="post" class="d-flex">
                 <input type="text" name="teamName" class="form-control me-2"
-                       placeholder="Enter unique team name"
-                       minlength="3"
-                       maxlength="50"
-                       required>
+                       placeholder="Enter unique team name" minlength="3" maxlength="50" required>
                 <button type="submit" class="btn btn-primary">Create Team</button>
             </form>
         </div>
     </div>
 
-
     <!-- Teams List -->
     <div th:each="team : ${teams}" class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 th:text="${team.name}">Team Name</h5>
+            <h5><i class="bi bi-person-lines-fill"></i> <span th:text="${team.name}">Team Name</span></h5>
             <div>
                 <span class="badge bg-info me-2">
-                    Team Manager: <span th:text="${team.manager.fName + ' ' + team.manager.lName}"></span>
+                    Manager: <span th:text="${team.manager.fName + ' ' + team.manager.lName}"></span>
                 </span>
-                <!-- Delete button (Only for Managers) -->
                 <form th:if="${isManager}" th:action="@{/teams/{teamId}/delete(teamId=${team.teamId})}"
                       method="post" class="d-inline">
                     <button type="submit" class="btn btn-danger btn-sm"
-                            onclick="return confirm('Are you sure you want to delete this team?')">Delete</button>
+                            onclick="return confirm('Are you sure you want to delete this team?')">
+                        <i class="bi bi-trash3"></i> Delete
+                    </button>
                 </form>
             </div>
         </div>
+
         <div class="card-body">
-            <!-- Team Members Display -->
-            <h6>Team Members:</h6>
+            <!-- Team Members -->
+            <h6><i class="bi bi-person-badge"></i> Team Members:</h6>
             <div th:if="${teamMembersMap[team.teamId] == null or #lists.isEmpty(teamMembersMap[team.teamId])}"
-                 class="text-muted mb-3">
-                No members in this team yet.
-            </div>
+                 class="text-muted mb-3">No members in this team yet.</div>
+
             <div th:unless="${teamMembersMap[team.teamId] == null or #lists.isEmpty(teamMembersMap[team.teamId])}"
                  class="mb-3">
                 <div th:each="member : ${teamMembersMap[team.teamId]}"
@@ -63,27 +233,30 @@
                         <strong th:text="${member.fName + ' ' + member.lName}"></strong>
                         <span class="text-muted" th:text="'(' + ${member.role.id.roleName} + ')'"></span>
                     </span>
-                    <!-- Edit buttons (Only for Managers) -->
+
+                    <!-- Manager Controls -->
                     <div th:if="${isManager}">
-                        <!-- Assign as Team Manager -->
                         <form th:action="@{/teams/{teamId}/manager(teamId=${team.teamId})}"
                               method="post" class="d-inline me-2">
                             <input type="hidden" name="employeeId" th:value="${member.empId}">
-                            <button type="submit" class="btn btn-outline-primary btn-sm">Make Team Manager</button>
+                            <button type="submit" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-person-check"></i> Make Manager
+                            </button>
                         </form>
-                        <!-- Remove from Team -->
                         <form th:action="@{/teams/{teamId}/remove(teamId=${team.teamId})}"
                               method="post" class="d-inline">
                             <input type="hidden" name="employeeId" th:value="${member.empId}">
-                            <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
+                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-x-circle"></i> Remove
+                            </button>
                         </form>
                     </div>
                 </div>
             </div>
 
-            <!-- Add Employee to Team (Only for Managers) -->
+            <!-- Add Employee to Team -->
             <div th:if="${isManager and !#lists.isEmpty(availableEmployees)}">
-                <h6 class="mt-3">Add Employee to Team:</h6>
+                <h6 class="mt-3"><i class="bi bi-person-add"></i> Add Employee to Team:</h6>
                 <form th:action="@{/teams/{teamId}/add(teamId=${team.teamId})}" method="post" class="d-flex">
                     <select name="employeeId" class="form-select me-2" required>
                         <option value="" disabled selected>Choose employee</option>
@@ -91,22 +264,23 @@
                                 th:value="${emp.empId}"
                                 th:text="${emp.fName + ' ' + emp.lName + ' (' + emp.role.id.roleName + ')'}"></option>
                     </select>
-                    <button type="submit" class="btn btn-success">Add to Team</button>
+                    <button type="submit" class="btn btn-success"><i class="bi bi-person-plus"></i> Add</button>
                 </form>
             </div>
+
             <div th:if="${isManager and #lists.isEmpty(availableEmployees)}" class="text-muted mt-3">
                 No available employees to add.
             </div>
         </div>
     </div>
 
-    <!-- No Teams Message -->
-    <div th:if="${#lists.isEmpty(teams)}" class="alert alert-info">
+    <!-- No Teams -->
+    <div th:if="${#lists.isEmpty(teams)}" class="alert alert-info text-center mt-4">
         <span th:if="${isManager}">No teams created yet. Create your first team above!</span>
         <span th:unless="${isManager}">No teams available in your department.</span>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
