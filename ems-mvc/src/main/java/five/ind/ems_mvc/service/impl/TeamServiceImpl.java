@@ -22,6 +22,11 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public List<Team> getAllTeams() {
+        return teamRepository.findAll();
+    }
+
+    @Override
     public List<Team> getTeamsByDepartment(Long deptId) {
         return teamRepository.findByManager_Role_Department_DeptId(deptId);
     }

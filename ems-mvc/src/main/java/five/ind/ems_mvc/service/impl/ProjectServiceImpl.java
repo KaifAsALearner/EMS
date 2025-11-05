@@ -3,6 +3,7 @@ package five.ind.ems_mvc.service.impl;
 import five.ind.ems_mvc.entity.Project;
 import five.ind.ems_mvc.entity.Employee;
 import five.ind.ems_mvc.entity.Team;
+import five.ind.ems_mvc.entity.enums.ProjectStatus;
 import five.ind.ems_mvc.repository.ProjectRepository;
 import five.ind.ems_mvc.repository.EmployeeRepository;
 import five.ind.ems_mvc.repository.TeamRepository;
@@ -24,12 +25,30 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<Project> getProjectsByDepartment(Long deptId){
-        return projectRepository.findByDepartment_DeptId(deptId);
+    public void saveProject(Project project) {
+        projectRepository.save(project);
     }
 
+
     @Override
-    public Project createProject(Long managerId, String name, String description){
+    public List<Project> getAllProjects() {
+        List<Project> list = projectRepository.findAll();
+        return list == null ? List.of() : list;
+    }
+
+
+    @Override
+    public List<Project> getProjectsByTeamId(Long teamId){
+        return projectRepository.findByTeam_TeamId(teamId);
+    }
+
+//    @Override
+//    public List<Project> getProjectsByDepartment(Long deptId){
+//        return projectRepository.findByDepartment_DeptId(deptId);
+//    }
+
+    @Override
+    public Project createProject(Long managerId, String name, String description, String priority) {
         Employee manager = employeeRepository.findById(managerId)
                 .orElseThrow(() -> new RuntimeException("Manager not found"));
         if (!manager.getRole().getId().getRoleName().equalsIgnoreCase("MANAGER")) {
@@ -41,7 +60,9 @@ public class ProjectServiceImpl implements ProjectService {
         Project project = new Project();
         project.setName(name);
         project.setDescription(description);
-        project.setDepartment(manager.getRole().getDepartment());
+        project.setPriority(priority);
+        project.setStatus(ProjectStatus.ACTIVE);
+//        project.setDepartment(manager.getRole().getDepartment());
         return projectRepository.save(project);
     }
 
@@ -55,10 +76,16 @@ public class ProjectServiceImpl implements ProjectService {
                 .orElseThrow(() -> new RuntimeException("Team not found"));
 
         Long deptId = manager.getRole().getDepartment().getDeptId();
-        if (!project.getDepartment().getDeptId().equals(deptId) || !team.getManager().getRole().getDepartment().getDeptId().equals(deptId)){
-            throw new RuntimeException("Can only assign your department's team/project!");
-        }
+//        if (!project.getDepartment().getDeptId().equals(deptId) || !team.getManager().getRole().getDepartment().getDeptId().equals(deptId)){
+//            throw new RuntimeException("Can only assign your department's team/project!");
+//        }
         project.setTeam(team);
         projectRepository.save(project);
+    }
+
+    @Override
+    public Project getProjectById(Long projectId){
+        return projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
     }
 }

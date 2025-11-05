@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Project Tasks</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2 th:text="'Tasks for Project: ' + ${project.name}"></h2>
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <!-- Team manager: Task creation form -->
+    <div th:if="${isManager}" class="card mb-4">
+        <div class="card-header">Create & Assign Task</div>
+        <div class="card-body">
+            <form th:action="@{/tasks/project/{projectId}/create(projectId=${project.projectId})}" method="post" class="row g-2">
+                <input type="hidden" name="teamId" th:value="${team.teamId}">
+                <div class="col-md-3"><input type="text" name="name" class="form-control" placeholder="Task Name" required></div>
+                <div class="col-md-3"><input type="text" name="description" class="form-control" placeholder="Description" required></div>
+                <div class="col-md-2">
+                    <select name="priority" class="form-select" required>
+                        <option value="" disabled selected>Priority</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select name="assignedEmpId" class="form-select" required>
+                        <option value="" disabled selected>Assign to</option>
+                        <option th:each="m : ${members}" th:value="${m.empId}" th:text="${m.fName + ' ' + m.lName}"></option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="date" name="startDate" class="form-control" required>
+                    <input type="date" name="dueDate" class="form-control mt-1" required>
+                </div>
+                <div class="col-md-12 mt-2"><button type="submit" class="btn btn-primary w-100">Create Task</button></div>
+            </form>
+        </div>
+    </div>
+    <!-- Task List Table -->
+    <div th:if="${tasks != null && #lists.size(tasks) > 0}">
+        <table class="table table-bordered mt-4">
+            <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Priority</th>
+                <th>Assigned To</th>
+                <th>Status</th>
+                <th>Start</th>
+                <th>Due</th>
+                <th>End</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="task : ${tasks}">
+                <td th:text="${task.name}"></td>
+                <td th:text="${task.description}"></td>
+                <td th:text="${task.priority}"></td>
+                <td th:text="${task.assignedTo.fName + ' ' + task.assignedTo.lName}"></td>
+                <td th:text="${task.status}"></td>
+                <td th:text="${task.startDate}"></td>
+                <td th:text="${task.dueDate}"></td>
+                <td th:text="${task.endDate}"></td>
+                <td>
+                    <!-- Employee: Mark In Progress (ASSIGNED or REOPENED) -->
+                    <div th:if="${userId == task.assignedTo.empId}">
+                        <form th:if="${task.status == T(five.ind.ems_mvc.entity.enums.TaskStatus).ASSIGNED or task.status == T(five.ind.ems_mvc.entity.enums.TaskStatus).REOPENED}"
+                              th:action="@{/tasks/{taskId}/status(taskId=${task.taskId})}" method="post">
+                            <input type="hidden" name="status" value="IN_PROGRESS"/>
+                            <button type="submit" class="btn btn-sm btn-primary ms-2">Mark In Progress</button>
+                        </form>
+                        <form th:if="${task.status == T(five.ind.ems_mvc.entity.enums.TaskStatus).IN_PROGRESS}"
+                              th:action="@{/tasks/{taskId}/status(taskId=${task.taskId})}" method="post">
+                            <input type="hidden" name="status" value="COMPLETED"/>
+                            <button type="submit" class="btn btn-sm btn-success ms-2">Mark Completed</button>
+                        </form>
+                    </div>
+                    <!-- Manager: Choose Verified or Reopened when Completed -->
+                    <div th:if="${isManager}">
+                        <form th:if="${task.status == T(five.ind.ems_mvc.entity.enums.TaskStatus).COMPLETED}"
+                              th:action="@{/tasks/{taskId}/status(taskId=${task.taskId})}" method="post">
+                            <select name="status" class="form-select form-select-sm d-inline w-auto" required>
+                                <option value="VERIFIED">Verified</option>
+                                <option value="REOPENED">Reopened</option>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-secondary ms-2">Update Status</button>
+                        </form>
+                    </div>
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:if="${tasks == null || #lists.isEmpty(tasks)}" class="alert alert-info">
+        No tasks created yet for this project.
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

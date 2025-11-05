@@ -1,5 +1,6 @@
 package five.ind.ems_mvc.entity;
 
+import five.ind.ems_mvc.entity.enums.TaskStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,7 +30,14 @@ public class Task {
     @JoinColumn(name = "assigned_to_emp_id")
     private Employee assignedTo;
 
-    private String desc;
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
+
+    @Enumerated(EnumType.STRING)
+    private TaskStatus status;
+
+    private String description;
     private String priority;
     private LocalDate startDate;
     private LocalDate endDate;

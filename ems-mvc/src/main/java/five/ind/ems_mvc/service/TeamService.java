@@ -6,6 +6,7 @@ import five.ind.ems_mvc.entity.Team;
 import java.util.List;
 
 public interface TeamService {
+    List<Team> getAllTeams();
     List<Team> getTeamsByDepartment(Long deptId);
     Team createTeam(Long managerId, String teamName);
     void addEmployeeToTeam(Long managerId, Long teamId, Long employeeId);

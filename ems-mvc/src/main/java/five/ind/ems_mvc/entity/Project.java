@@ -1,5 +1,6 @@
 package five.ind.ems_mvc.entity;
 
+import five.ind.ems_mvc.entity.enums.ProjectStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,12 +27,15 @@ public class Project {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    @ManyToOne
-    @JoinColumn(name = "dept_id") // department reference
-    private Department department;
+//    @ManyToOne
+//    @JoinColumn(name = "dept_id") // department reference
+//    private Department department;
 
     @Column(name = "description", length = 100)
     private String description;
+
+    @Enumerated(EnumType.STRING)
+    private ProjectStatus status;
 
     private String priority;
     private LocalDate startDate;
