@@ -32,45 +32,31 @@
         .nav-link {
             color: #ddd !important;
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         .nav-link:hover {
             color: #00bcd4 !important;
-            transform: scale(1.05);
+            transform: scale(1.03);
         }
 
-        /* DROPDOWN FIX */
+        /* ensure dropdowns float above everything */
         .dropdown-menu {
-            position: absolute !important;
-            top: 100%;
-            right: 0;
-            margin-top: 10px;
-            display: none;
             background-color: rgba(18, 18, 18, 0.95);
-            border-radius: 10px;
+            border-radius: 8px;
             backdrop-filter: blur(6px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            z-index: 2000; /* ensures dropdown appears above everything */
-            animation: fadeIn 0.25s ease-in-out;
-        }
-
-        .dropdown-menu.show {
-            display: block;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.45);
+            z-index: 3000;
         }
 
         .dropdown-item {
-            transition: all 0.2s ease;
+            color: #ddd !important;
+            transition: all 0.15s ease;
         }
 
         .dropdown-item:hover {
-            background-color: rgba(255,255,255,0.08);
+            background-color: rgba(255,255,255,0.04);
             color: #00bcd4 !important;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .hero {
@@ -91,76 +77,79 @@
             text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
         }
 
-        .hero p {
-            font-size: 1.25rem;
-            max-width: 650px;
-            margin-top: 20px;
-            color: #eee;
-        }
-
-        .btn-emf {
-            margin-top: 30px;
-            padding: 12px 30px;
-            font-size: 1.1rem;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-emf:hover {
-            transform: translateY(-3px);
-            box-shadow: 0px 10px 25px rgba(0, 188, 212, 0.3);
-        }
+        .btn-emf { margin-top: 30px; padding: 12px 30px; border-radius: 50px; }
 
         footer {
             background-color: rgba(0,0,0,0.7);
             color: #aaa;
             text-align: center;
-            padding: 15px 0;
+            padding: 12px 0;
             position: fixed;
             bottom: 0;
             width: 100%;
-            font-size: 0.9rem;
             z-index: 100;
         }
     </style>
 </head>
 <body>
-<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid px-4">
-        <a class="navbar-brand" href="#">EMF</a>
+        <a class="navbar-brand" th:href="@{/}">EMF</a>
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav" aria-controls="navbarNav"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <!-- Show only when NOT logged in -->
-            <ul class="navbar-nav" th:if="${!loggedIn}">
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/register}"><i class="bi bi-person-plus"></i> Register</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/login}"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- left side nav (optional/common links) -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" th:href="@{/projects}"><i class="bi bi-kanban"></i> Projects</a>-->
+<!--                </li>-->
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" th:href="@{/teams}"><i class="bi bi-people"></i> Teams</a>-->
+<!--                </li>-->
+
+                <!-- Assets top-level dropdown (works reliably with Bootstrap 5) -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="assetsDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-hdd-stack"></i> Assets
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="assetsDropdown">
+                        <li><a class="dropdown-item" th:href="@{/assets/all}"><i class="bi bi-card-list"></i> All Assets</a></li>
+                        <li><a class="dropdown-item" th:href="@{/assets/assigned}"><i class="bi bi-box-seam"></i> My Assigned Assets</a></li>
+                        <!-- only managers see add-new asset -->
+                        <li th:if="${isManager}"><hr class="dropdown-divider bg-secondary"></li>
+                        <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/assets/new}"><i class="bi bi-plus-circle"></i> Add New Asset</a></li>
+                    </ul>
                 </li>
             </ul>
 
-            <!-- Show only when logged in -->
-            <ul class="navbar-nav" th:if="${loggedIn}">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
-                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <!-- right side user controls -->
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <!-- when not logged in -->
+                <li class="nav-item" th:if="${!loggedIn}">
+                    <a class="nav-link" th:href="@{/register}"><i class="bi bi-person-plus"></i> Register</a>
+                </li>
+                <li class="nav-item" th:if="${!loggedIn}">
+                    <a class="nav-link" th:href="@{/login}"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+                </li>
+
+                <!-- when logged in -->
+                <li class="nav-item dropdown" th:if="${loggedIn}">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person-circle"></i> <span th:text="${currentUser.fName}">User</span>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end bg-dark border-0 shadow">
-                        <li><a class="dropdown-item text-light" th:href="@{/profile}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
-                        <li><a class="dropdown-item text-light" th:href="@{/projects}"><i class="bi bi-kanban"></i> Projects</a></li>
-                        <li><a class="dropdown-item text-light" th:href="@{/teams}"><i class="bi bi-people"></i> Teams</a></li>
-                        <li th:if="${isManager}">
-                            <a class="dropdown-item text-light" th:href="@{/employees}"><i class="bi bi-person-badge"></i> List of Employees</a>
-                        </li>
-                        <li><hr class="dropdown-divider bg-secondary"></li>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                        <li><a class="dropdown-item" th:href="@{/projects}"><i class="bi bi-kanban"></i> Projects</a></li>
+                        <li><a class="dropdown-item" th:href="@{/teams}"><i class="bi bi-people"></i> Teams</a></li>
+                        <li th:if="${isManager}"><a class="dropdown-item" th:href="@{/employees}"><i class="bi bi-person-badge"></i> Employees</a></li>
+                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item text-danger" th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
                     </ul>
                 </li>
@@ -170,24 +159,22 @@
 </nav>
 
 <!-- HERO SECTION -->
-<section class="hero container">
-    <div>
-        <h1>Welcome to Employee Management Framework</h1>
-        <p>Empowering organizations to manage employees, projects, and teams efficiently — all in one place.</p>
+<section class="hero container text-center">
+    <h1>Welcome to Employee Management Framework</h1>
+    <p>Empowering organizations to manage employees, assets, projects, and teams efficiently — all in one place.</p>
 
-        <div th:if="${!loggedIn}">
-            <a th:href="@{/register}" class="btn btn-info btn-emf me-2"><i class="bi bi-person-plus"></i> Register</a>
-            <a th:href="@{/login}" class="btn btn-outline-light btn-emf"><i class="bi bi-box-arrow-in-right"></i> Login</a>
-        </div>
+    <div th:if="${!loggedIn}">
+        <a th:href="@{/register}" class="btn btn-info btn-emf me-2"><i class="bi bi-person-plus"></i> Register</a>
+        <a th:href="@{/login}" class="btn btn-outline-light btn-emf"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+    </div>
 
-        <div th:if="${loggedIn}">
-            <a th:href="@{/profile}" class="btn btn-info btn-emf"><i class="bi bi-speedometer2"></i> Go to Dashboard</a>
-        </div>
+    <div th:if="${loggedIn}">
+        <a th:href="@{/profile}" class="btn btn-info btn-emf"><i class="bi bi-speedometer2"></i> Go to Dashboard</a>
     </div>
 </section>
 
 <footer>
-    <p>© 2025 EMF | Crafted with ❤️ by Kaif</p>
+    <p>© 2025 EMF | Crafted with ❤️ by MAJIK</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

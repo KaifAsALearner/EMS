@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${asset.assetId == null} ? 'Create Asset | EMF' : 'Edit Asset | EMF'"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.8)),
+                        url('https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: #e0f7fa;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            margin-top: 80px;
+            max-width: 650px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        h2 {
+            text-align: center;
+            color: #00bcd4;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0,188,212,0.5);
+            margin-bottom: 25px;
+        }
+
+        label {
+            font-weight: 500;
+            color: #b2ebf2;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-control, .form-select {
+            background-color: rgba(20, 20, 20, 0.9);
+            border: 1px solid rgba(0,188,212,0.3);
+            color: #e0f7fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #00e5ff;
+            box-shadow: 0 0 15px rgba(0,229,255,0.4);
+            background-color: rgba(25,25,25,0.95);
+            color: #fff;
+        }
+
+        .btn-primary {
+            background-color: #00bcd4;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #00e5ff;
+            box-shadow: 0 0 18px rgba(0,229,255,0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-light {
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-light:hover {
+            background-color: #00bcd4;
+            border-color: #00bcd4;
+            color: #000;
+            box-shadow: 0 0 15px rgba(0,188,212,0.4);
+        }
+
+        footer {
+            background-color: rgba(0,0,0,0.7);
+            color: #aaa;
+            text-align: center;
+            padding: 12px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(15px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>
+        <i class="bi" th:classappend="${asset.assetId == null} ? 'bi-plus-circle' : 'bi-pencil-square'"></i>
+        <span th:text="${asset.assetId == null} ? 'Create Asset' : 'Edit Asset'"></span>
+    </h2>
+
+    <form th:action="${asset.assetId == null} ? @{/assets/new} : @{'/assets/' + ${asset.assetId} + '/edit'}" method="post">
+        <div class="mb-3">
+            <label for="name">Asset Name:</label>
+            <input id="name" class="form-control" type="text" name="name" th:value="${asset.name}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="category">Category:</label>
+            <input id="category" class="form-control" type="text" name="category" th:value="${asset.category}" required>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="purchaseDate">Purchase Date:</label>
+                <input id="purchaseDate" class="form-control" type="date" name="purchaseDate" th:value="${asset.purchaseDate}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="cost">Cost:</label>
+                <input id="cost" class="form-control" type="number" step="0.01" name="cost" th:value="${asset.cost}" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="status">Status:</label>
+                <select id="status" class="form-select" name="status">
+                    <option th:each="status : ${statuses}"
+                            th:value="${status}"
+                            th:text="${status}"
+                            th:selected="${status} == ${asset.status}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="warrantyExp">Warranty Expiry:</label>
+                <input id="warrantyExp" class="form-control" type="date" name="warrantyExp" th:value="${asset.warrantyExp}">
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between flex-wrap gap-2">
+            <a th:href="@{/}" class="btn btn-outline-light"><i class="bi bi-house-door"></i> Home</a>
+            <a th:href="@{/assets/all}" class="btn btn-outline-light"><i class="bi bi-arrow-left"></i> Back to Assets</a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi" th:classappend="${asset.assetId == null} ? 'bi-plus-lg' : 'bi-save'"></i>
+                <span th:text="${asset.assetId == null} ? 'Create' : 'Update'"></span>
+            </button>
+        </div>
+    </form>
+</div>
+
+<footer>
+    <p>© 2025 EMF | Crafted with ❤️ by MAJIK</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

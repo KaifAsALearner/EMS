@@ -9,4 +9,6 @@ import java.util.List;
 
 @Repository
 public interface AssetAssignedRepository extends JpaRepository<AssetAssigned, AssetAssignedId> {
+    List<AssetAssigned> findByEmployee_EmpId(Long empId);
+    List<AssetAssigned> findByAsset_AssetId(Long assetId);
 }

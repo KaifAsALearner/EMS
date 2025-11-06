@@ -65,6 +65,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public Employee findById(Long empId) {
+        return employeeRepository.findById(empId).orElse(null);
+    }
+
+    @Override
     public List<Employee> findAllEmployees() {
         List<Employee> employees = employeeRepository.findAll();
         // Use a stream to map each Employee entity to an EmployeeDto

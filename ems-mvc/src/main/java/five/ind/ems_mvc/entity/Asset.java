@@ -1,5 +1,6 @@
 package five.ind.ems_mvc.entity;
 
+import five.ind.ems_mvc.entity.enums.AssetStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,9 @@ public class Asset {
     private String category;
     private LocalDate purchaseDate;
     private Double cost;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private AssetStatus status = AssetStatus.AVAILABLE;
+
     private LocalDate warrantyExp;
 }

@@ -34,7 +34,13 @@ public class SecurityConfig {
                         .requestMatchers("/register/**").permitAll()
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/index").permitAll()
+
+                        // MANAGERS ONLY
+                        .requestMatchers("/assets/new").hasRole("MANAGER")
+                        .requestMatchers("/assets/*/edit").hasRole("MANAGER")
+                        .requestMatchers("/assets/*/assign").hasRole("MANAGER")
                         .requestMatchers("/employees").hasRole("MANAGER")
+
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

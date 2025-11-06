@@ -8,6 +8,7 @@ import java.util.List;
 public interface EmployeeService {
     void saveEmployee(EmployeeDto employeeDto);
     Employee findByUsername(String username);
+    Employee findById(Long empId);
     List<Employee> findAllEmployees();
     List<String> findEmails(long employeeId);
     List<String> findPhones(long employeeId);
